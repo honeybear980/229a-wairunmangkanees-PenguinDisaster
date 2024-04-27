@@ -9,8 +9,7 @@ public class Movement : MonoBehaviour
     [SerializeField] int jumpPower;
     private Rigidbody2D body;
     private bool isGrounded;
-    public Transform groundCheck;
-    public LayerMask groundLayer;
+   
 
     private void Awake()
     {
