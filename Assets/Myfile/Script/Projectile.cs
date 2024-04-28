@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 public class Projectile : MonoBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private float damage;
 
     private Vector2 direction;
 
@@ -19,7 +20,14 @@ public class Projectile : MonoBehaviour
     public void Setup(Vector2 direction)
     {
         this.direction = direction;
-        
     }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.tag == "Player")
+        {
+            collision.GetComponent<Health>().TakeDamage(damage);
+        }
+    }
+    
 
 }

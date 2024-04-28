@@ -55,21 +55,30 @@ public class EnemyRanged : MonoBehaviour
     cooldownTimer += Time.deltaTime;
     if (PlayerInSight())
     {
+      
       if (cooldownTimer >= attackCooldown)
       {
         cooldownTimer = 0;
+        Shoot();
       }
     }
 
     if (enemyPatrol != null)
       enemyPatrol.enabled = !PlayerInSight();
+    
   }
 
   public void Shoot()
   {
     GameObject go = Instantiate(Bullet, head.position, Quaternion.identity);
     Vector3 direction = new Vector3(transform.localScale.x, 0);
-
     go.GetComponent<Projectile>().Setup(direction);
+  }
+  private void OnTriggerEnter2D(Collider2D collision)
+  {
+    if (collision.tag == "Player")
+    {
+      collision.GetComponent<Health>().TakeDamage(damage);
+    }
   }
 }
