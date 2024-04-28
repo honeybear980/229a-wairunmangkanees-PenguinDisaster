@@ -9,6 +9,11 @@ public class EnemyRanged : MonoBehaviour
   [SerializeField] private float range;
   [SerializeField] private int damage;
 
+  [SerializeField]private GameObject Bullet;
+  [SerializeField]private Transform head;
+
+  
+  
   [Header("Collider Parameters")] [SerializeField]
   private float colldierDistance;
 
@@ -30,16 +35,41 @@ public class EnemyRanged : MonoBehaviour
 
   private bool PlayerInSight()
   {
-    RaycastHit2D hit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, Vector2.left, 0,
-      playerLayer);
+    RaycastHit2D hit = Physics2D.BoxCast(
+      boxCollider.bounds.center + transform.right * range * transform.localScale.x * colldierDistance,
+      new Vector3(boxCollider.bounds.size.x * range, boxCollider.bounds.size.y, boxCollider.bounds.size.z), 0,
+      Vector2.left, 0, playerLayer);
     return hit.collider != null;
   }
+
+  private void OnDrawGizmos()
+  {
+    Gizmos.color = Color.red;
+    Gizmos.DrawWireCube(boxCollider.bounds.center + transform.right * range * transform.localScale.x * colldierDistance,
+      new Vector3(boxCollider.bounds.size.x * range, boxCollider.bounds.size.y,boxCollider.bounds.size.z));
+  }
+
 
   private void Update()
   {
     cooldownTimer += Time.deltaTime;
+    if (PlayerInSight())
+    {
+      if (cooldownTimer >= attackCooldown)
+      {
+        cooldownTimer = 0;
+      }
+    }
 
     if (enemyPatrol != null)
       enemyPatrol.enabled = !PlayerInSight();
+  }
+
+  public void Shoot()
+  {
+    GameObject go = Instantiate(Bullet, head.position, Quaternion.identity);
+    Vector3 direction = new Vector3(transform.localScale.x, 0);
+
+    go.GetComponent<Projectile>().Setup(direction);
   }
 }
